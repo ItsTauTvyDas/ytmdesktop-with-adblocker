@@ -1,4 +1,7 @@
-# YouTube Music Desktop App
+# YouTube Music Desktop App (with AdBlocker!)
+
+(ad-blocker will automatically work)
+
 ### Now with a Fresh new Codebase 😉
 
 ![YouTube Music Desktop App](.github/images/readme_main_app.png)
