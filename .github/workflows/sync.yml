@@ -1,4 +1,4 @@
-name: Sync for
+name: Sync fork
 
 on:
   schedule:
