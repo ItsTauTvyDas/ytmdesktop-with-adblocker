@@ -22,11 +22,15 @@ import Conf from "conf";
 import log from "electron-log";
 import path from "path";
 import fs from "fs/promises";
+import { constants as fsConstants } from "fs";
 import electronSquirrelStartup from "electron-squirrel-startup";
 
 import MemoryStore from "./memory-store";
 import playerStateStore, { PlayerState, VideoState } from "./player-state-store";
 import { MemoryStoreSchema, StoreSchema, TrayIconStyle } from "../shared/store/schema";
+
+import { ElectronBlocker, fullLists } from "@ghostery/adblocker-electron";
+import fetch from "node-fetch";
 
 import CompanionServer from "./integrations/companion-server";
 import CustomCSS from "./integrations/custom-css";
@@ -54,6 +58,7 @@ let appUpdateDownloaded = false;
 let appLaunchUpdateCheck = true;
 
 let stateSaverInterval: NodeJS.Timeout | null = null;
+let blocker = null;
 
 //#region   Crash + Error reporting
 crashReporter.start({ uploadToServer: false });
@@ -157,7 +162,7 @@ log.info("Application launched");
 app.enableSandbox();
 
 // appMenu allows for some basic windows management, editMenu allow for copy and paste shortcuts on MacOS
-const template: MenuItemConstructorOptions[] = [{ role: "appMenu", label: "YouTube Music Desktop App" }, { role: "editMenu" }];
+const template: MenuItemConstructorOptions[] = [{ role: "appMenu", label: "YouTube Music Desktop App Test" }, { role: "editMenu" }];
 const builtMenu = isDarwin ? Menu.buildFromTemplate(template) : null; // null for performance https://www.electronjs.org/docs/latest/tutorial/performance#8-call-menusetapplicationmenunull-when-you-do-not-need-a-default-menu
 Menu.setApplicationMenu(builtMenu);
 
@@ -1030,6 +1035,11 @@ const createYTMView = (): void => {
       autoplayPolicy: store.get("playback.continueWhereYouLeftOffPaused") ? "document-user-activation-required" : "no-user-gesture-required"
     }
   });
+
+  if (blocker) {
+    blocker.enableBlockingInSession(ytmView.webContents.session);
+  }
+
   companionServer.provide(store, memoryStore, ytmView);
   customCss.provide(store, ytmView);
   ratioVolume.provide(ytmView);
@@ -1198,7 +1208,7 @@ const createYTMView = (): void => {
   }, 30 * 1000);
 };
 
-const createMainWindow = (): void => {
+const createMainWindow = async (): Promise<void> => {
   // Create the browser window.
   const scaleFactor = screen.getPrimaryDisplay().scaleFactor;
   const windowBounds = store.get("state").windowBounds;
@@ -1225,6 +1235,7 @@ const createMainWindow = (): void => {
       devTools: store.get("developer.enableDevTools")
     }
   });
+
   const windowMaximized = store.get("state").windowMaximized;
   // Even though bounds are set when creating the main window we set the bounds again to fix scaling issues. This is classified as an upstream chromium bug.
   if (windowBounds) {
@@ -1335,7 +1346,7 @@ app.on("ready", async () => {
   // First run checks
   const firstRunPath = path.join(app.getPath("userData"), ".first-run");
   try {
-    await fs.access(firstRunPath, fs.constants.F_OK);
+    await fs.access(firstRunPath, fsConstants.F_OK);
   } catch {
     // This is the first run of the program
     const firstRunTouch = await fs.open(firstRunPath, "a");
@@ -1478,6 +1489,36 @@ app.on("ready", async () => {
   } else {
     memoryStore.set("safeStorageAvailable", true);
   }
+
+  // Create blocker once on startup
+  log.info("Initiating ad-blocker");
+  blocker = await ElectronBlocker.fromLists(fetch, fullLists, {
+    enableCompression: true
+  });
+
+  blocker.on("request-blocked", request => {
+    console.log("blocked", request.tabId, request.url);
+  });
+
+  blocker.on("request-redirected", request => {
+    console.log("redirected", request.tabId, request.url);
+  });
+
+  blocker.on("request-whitelisted", request => {
+    console.log("whitelisted", request.tabId, request.url);
+  });
+
+  blocker.on("csp-injected", request => {
+    console.log("csp", request.url);
+  });
+
+  blocker.on("script-injected", (script: string, url: string) => {
+    console.log("script", script.length, url);
+  });
+
+  blocker.on("style-injected", (style: string, url: string) => {
+    console.log("style", style.length, url);
+  });
 
   // Handle main window ipc
   ipcMain.on("mainWindow:minimize", event => {
@@ -1872,7 +1913,7 @@ app.on("ready", async () => {
 
   log.info("Created tray icon");
 
-  createMainWindow();
+  await createMainWindow();
   log.info("Created main window");
 
   memoryStore.set("ytmViewLoading", true);
@@ -1975,11 +2016,11 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
+app.on("activate", async () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createMainWindow();
+    await createMainWindow();
     createYTMView();
   }
 });

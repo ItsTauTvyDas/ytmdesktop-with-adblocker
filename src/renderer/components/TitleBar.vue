@@ -74,7 +74,7 @@ if (props.isMainWindow) {
       <div class="title">
         <span v-if="icon" class="icon material-symbols-outlined">{{ icon }}</span>
         <img v-if="iconFile" class="icon" :src="iconFile" />
-        <p v-if="title && !centerTitleText" class="title-text">{{ title }}{{ ytmViewUnresponsive ? " (Unresponsive)" : "" }}</p>
+        <p v-if="title && !centerTitleText" class="title-text">{{ title }}{{ ytmViewUnresponsive ? " (Unresponsive)" : "" }} (with AdBlocker)</p>
       </div>
     </div>
     <div v-if="title && centerTitleText" class="center">

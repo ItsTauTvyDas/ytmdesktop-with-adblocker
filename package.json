@@ -2,7 +2,7 @@
   "name": "youtube-music-desktop-app",
   "productName": "YouTube Music Desktop App",
   "version": "2.0.11",
-  "description": "YouTube Music Desktop App",
+  "description": "YouTube Music Desktop App (with AdBlocker)",
   "main": ".vite/main/index.js",
   "private": true,
   "scripts": {
@@ -24,6 +24,7 @@
     "email": "novustheory@gmail.com"
   },
   "license": "GPL-3.0-only",
+  "repository": "https://github.com/ItsTauTvyDas/ytmdesktop-with-adblocker",
   "devDependencies": {
     "@electron-forge/cli": "~7.11.1",
     "@electron-forge/maker-deb": "~7.11.1",
@@ -58,6 +59,7 @@
     "@fastify/error": "^4.2.0",
     "@fastify/rate-limit": "^10.3.0",
     "@fastify/type-provider-typebox": "^5.2.0",
+    "@ghostery/adblocker-electron": "^2.14.1",
     "@sinclair/typebox": "^0.34.48",
     "conf": "^10.2.0",
     "electron-log": "5.4.3",
