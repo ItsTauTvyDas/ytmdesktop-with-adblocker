@@ -2,7 +2,7 @@ name: Sync fork
 
 on:
   schedule:
-    - cron: '0 0 * * *' # daily
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -12,6 +12,11 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Sync with upstream
         uses: repo-sync/github-sync@v2
         with:
