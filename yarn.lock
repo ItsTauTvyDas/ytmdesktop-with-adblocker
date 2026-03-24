@@ -10082,6 +10082,7 @@ __metadata:
     "@fastify/rate-limit": "npm:^10.3.0"
     "@fastify/type-provider-typebox": "npm:^5.2.0"
     "@ghostery/adblocker-electron": "npm:^2.14.1"
+    "@ghostery/adblocker-electron-preload": "npm:^2.14.1"
     "@sinclair/typebox": "npm:^0.34.48"
     "@types/electron-squirrel-startup": "npm:^1.0.2"
     "@types/node": "npm:^22.19.11"

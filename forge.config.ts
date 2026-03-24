@@ -7,6 +7,9 @@ import { VitePlugin } from "@electron-forge/plugin-vite";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
 
+import fs from "fs";
+import path from "path";
+
 // There is probably a better way to do this, such as fetching it directly from forge
 let makerArch = null;
 for (let i = 0; i < process.argv.length; i++) {
@@ -17,6 +20,15 @@ for (let i = 0; i < process.argv.length; i++) {
 }
 
 const config: ForgeConfig = {
+  hooks: {
+    packageAfterCopy: async (_forgeConfig, buildPath) => {
+      const srcBase = path.resolve("node_modules", "@ghostery", "adblocker-electron-preload");
+      const destBase = path.join(buildPath, "node_modules", "@ghostery", "adblocker-electron-preload");
+
+      fs.mkdirSync(path.dirname(destBase), { recursive: true });
+      fs.cpSync(srcBase, destBase, { recursive: true });
+    }
+  },
   packagerConfig: {
     executableName: "youtube-music-desktop-app",
     icon: "./src/assets/icons/ytmd",
