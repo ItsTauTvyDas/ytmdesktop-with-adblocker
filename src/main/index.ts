@@ -1498,27 +1498,27 @@ app.on("ready", async () => {
   });
 
   blocker.on("request-blocked", request => {
-    console.log("blocked", request.tabId, request.url);
+    log.info("[AdBlocker] blocked", request.tabId, request.url);
   });
 
   blocker.on("request-redirected", request => {
-    console.log("redirected", request.tabId, request.url);
+    log.info("[AdBlocker] redirected", request.tabId, request.url);
   });
 
   blocker.on("request-whitelisted", request => {
-    console.log("whitelisted", request.tabId, request.url);
+    log.info("[AdBlocker] whitelisted", request.tabId, request.url);
   });
 
   blocker.on("csp-injected", request => {
-    console.log("csp", request.url);
+    log.info("[AdBlocker] csp-injected", request.url);
   });
 
   blocker.on("script-injected", (script: string, url: string) => {
-    console.log("script", script.length, url);
+    log.info("[AdBlocker] script-injected", script.length, url);
   });
 
   blocker.on("style-injected", (style: string, url: string) => {
-    console.log("style", style.length, url);
+    log.info("[AdBlocker] style-injected", style.length, url);
   });
 
   // Handle main window ipc
