@@ -1,6 +1,10 @@
 # YouTube Music Desktop App (with AdBlocker!)
 
-(ad-blocker will automatically work)
+## Added features to this fork:
+* Added AdBlocker
+* Implemented [NonStop extension](https://github.com/lawfx/YoutubeNonStop/)
+
+Happy listening!
 
 ### Now with a Fresh new Codebase 😉
 
