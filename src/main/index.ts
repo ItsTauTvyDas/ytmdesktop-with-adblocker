@@ -31,6 +31,7 @@ import { MemoryStoreSchema, StoreSchema, TrayIconStyle } from "../shared/store/s
 
 import { ElectronBlocker, fullLists } from "@ghostery/adblocker-electron";
 import fetch from "node-fetch";
+import autoConfirmScript from "./scripts/autoconfirm?raw";
 
 import CompanionServer from "./integrations/companion-server";
 import CustomCSS from "./integrations/custom-css";
@@ -1629,6 +1630,7 @@ app.on("ready", async () => {
         });
       }
 
+      ytmView.webContents.send("ytmView:executeScript", "youtubeNonStop", "autoconfirm");
       // TODO: this is just a hack fix for ratio volume to run the enable script
       ratioVolume.ytmViewLoaded();
       // TODO: this is just a hack fix for custom css to update CSS when the view loads
@@ -1936,6 +1938,9 @@ app.on("ready", async () => {
     map[obj.name] = obj.script;
     return map;
   }, {});
+  ytmViewIntegrationScripts["youtubeNonStop"] = {
+    autoconfirm: autoConfirmScript
+  };
 
   // Create the YouTube Music view
   createYTMView();

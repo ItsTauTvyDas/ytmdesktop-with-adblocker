@@ -343,7 +343,8 @@ window.addEventListener("load", async () => {
         (
           await webFrame.executeJavaScript(`
             (function() {
-              document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playing ? document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.pauseVideo() : document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.playVideo();
+              const playerBar = document.querySelector("ytmusic-app-layout>ytmusic-player-bar");
+              playerBar.playing ? (window.__YTMD_YOUTUBE_NONSTOP_PAUSE__ ?? playerBar.playerApi.pauseVideo.bind(playerBar.playerApi))() : playerBar.playerApi.playVideo();
             })
           `)
         )();
@@ -365,7 +366,8 @@ window.addEventListener("load", async () => {
         (
           await webFrame.executeJavaScript(`
             (function() {
-              document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.pauseVideo();
+              const playerBar = document.querySelector("ytmusic-app-layout>ytmusic-player-bar");
+              (window.__YTMD_YOUTUBE_NONSTOP_PAUSE__ ?? playerBar.playerApi.pauseVideo.bind(playerBar.playerApi))();
             })
           `)
         )();
