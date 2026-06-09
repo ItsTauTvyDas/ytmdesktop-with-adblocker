@@ -26,7 +26,8 @@
   });
   document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.addEventListener("onVideoDataChange", event => {
     if (event.playertype === 1 && (event.type === "dataloaded" || event.type === "dataupdated")) {
-      let videoDetails = document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.getPlayerResponse().videoDetails;
+      let videoDetails = document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.getPlayerResponse()?.videoDetails;
+      if (!videoDetails) return;
       let playlistId = document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.getPlaylistId();
       let album = null;
       let hasFullMetadata = false;

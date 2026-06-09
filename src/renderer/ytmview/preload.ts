@@ -325,7 +325,10 @@ window.addEventListener("load", async () => {
       (
         await webFrame.executeJavaScript(`
           (function() {
-            window.ytmd.sendVideoData(document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.getPlayerResponse().videoDetails, document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.getPlaylistId());
+            const videoDetails = document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.getPlayerResponse()?.videoDetails;
+            if (videoDetails) {
+              window.ytmd.sendVideoData(videoDetails, document.querySelector("ytmusic-app-layout>ytmusic-player-bar").playerApi.getPlaylistId());
+            }
           })
         `)
       )();
