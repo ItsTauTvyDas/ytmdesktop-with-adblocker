@@ -1667,6 +1667,8 @@ app.on("ready", async () => {
 
   ipcMain.on("ytmView:videoDataChanged", (event, videoDetails, playlistId, album, likeStatus, hasFullMetadata) => {
     if (event.sender !== ytmView.webContents) return;
+    // The player response can lack video details (no video loaded yet or an ad is playing)
+    if (!videoDetails || !videoDetails.videoId) return;
 
     lastVideoId = videoDetails.videoId;
     lastPlaylistId = playlistId;
