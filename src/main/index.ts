@@ -1047,6 +1047,16 @@ const createYTMView = (): void => {
   ratioVolume.provide(ytmView);
 
   // Attach events to ytm view
+  ytmView.webContents.on("before-input-event", (event, input) => {
+    if (input.type === "keyDown" && input.control && input.shift && input.key.toLowerCase() === "i") {
+      event.preventDefault();
+      if (ytmView.webContents.isDevToolsOpened()) {
+        ytmView.webContents.closeDevTools();
+      } else {
+        ytmView.webContents.openDevTools({ mode: "detach" });
+      }
+    }
+  });
   ytmView.webContents.on("will-navigate", event => {
     const url = new URL(event.url);
     if (isPreventedNavOrRedirect(url)) {
