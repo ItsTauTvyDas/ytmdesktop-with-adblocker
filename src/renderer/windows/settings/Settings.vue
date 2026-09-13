@@ -278,6 +278,7 @@ window.ytmd.handleUpdateDownloaded(() => {
         <li :class="{ active: currentTab === 4 }" @click="changeTab(4)"><span class="material-symbols-outlined">wifi_tethering</span>Integrations</li>
         <li :class="{ active: currentTab === 5 }" @click="changeTab(5)"><span class="material-symbols-outlined">keyboard</span>Shortcuts</li>
         <span class="push"></span>
+        <li :class="{ active: currentTab === 727 }" @click="changeTab(727)"><span class="material-symbols-outlined">extension</span>Extensions</li>
         <li :class="{ active: currentTab === 99 }" @click="changeTab(99)"><span class="material-symbols-outlined">info</span>About</li>
       </ul>
       <div class="content">
@@ -520,16 +521,36 @@ window.ytmd.handleUpdateDownloaded(() => {
           </div>
         </div>
 
-        <div
-          v-if="currentTab === 99"
-          class="about-tab"
-          :style="{
-            backgroundImage: `linear-gradient(to bottom, transparent 0%, rgba(18,18,18,0.5) 50%, #121212 100%), url(${ImSoFreeImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }"
-        >
+        <div v-if="currentTab === 727" class="extension-tab">
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <img src="https://avatars.githubusercontent.com/u/3441846?s=60&v=4" alt="AdBlocker" />
+                </td>
+                <td>AdBlocker <small>by ghostery</small></td>
+                <td>
+                  <a target="_blank" href="https://github.com/ghostery/adblocker">
+                    <span class="material-symbols-outlined">open_in_new</span>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <img src="https://github.com/lawfx/YoutubeNonStop/raw/master/images/yns128.png" alt="YoutubeNonStop" />
+                </td>
+                <td title="Auto-confirms 'Are you still listening?' popup">YoutubeNonStop <small>by lawfx</small></td>
+                <td>
+                  <a target="_blank" href="https://github.com/lawfx/YoutubeNonStop">
+                    <span class="material-symbols-outlined">open_in_new</span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div v-if="currentTab === 99" class="about-tab" :style="{ '--about-tab-background-image': `url(${ImSoFreeImage})` }">
           <img class="icon" :src="logo" />
           <h2 class="app-name">YouTube Music Desktop App (NO ADS)</h2>
           <div class="made-by" style="text-align: center">
@@ -677,6 +698,49 @@ window.ytmd.handleUpdateDownloaded(() => {
   align-items: center;
   flex-direction: column;
   height: 100%;
+  background-image: linear-gradient(to bottom, transparent 0%, rgba(18, 18, 18, 0.5) 50%, #121212 100%), var(--about-tab-background-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.extension-tab table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.extension-tab table td {
+  padding: 12px 16px;
+  border: none;
+}
+
+.extension-tab table td:first-child {
+  width: 56px;
+}
+
+.extension-tab table td:nth-child(2) {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.extension-tab table td:last-child {
+  width: 56px;
+  text-align: center;
+}
+
+.extension-tab table a {
+  color: #aaa;
+  text-decoration: none;
+}
+
+.extension-tab table a:hover {
+  color: #fff;
+}
+
+.extension-tab img {
+  height: 25px;
 }
 
 .icon {
