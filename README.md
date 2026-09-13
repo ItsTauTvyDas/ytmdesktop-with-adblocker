@@ -7,6 +7,8 @@
 
 Happy listening!
 
+<img width="612" height="408" alt="imsofree" src="https://github.com/user-attachments/assets/44e713e3-d818-4be4-a217-118e0c261b8e" />
+
 <details>
   <summary>Original README</summary>
 
