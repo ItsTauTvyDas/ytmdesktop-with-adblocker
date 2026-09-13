@@ -163,7 +163,7 @@ log.info("Application launched");
 app.enableSandbox();
 
 // appMenu allows for some basic windows management, editMenu allow for copy and paste shortcuts on MacOS
-const template: MenuItemConstructorOptions[] = [{ role: "appMenu", label: "YouTube Music Desktop App Test" }, { role: "editMenu" }];
+const template: MenuItemConstructorOptions[] = [{ role: "appMenu", label: "YouTube Music Desktop App" }, { role: "editMenu" }];
 const builtMenu = isDarwin ? Menu.buildFromTemplate(template) : null; // null for performance https://www.electronjs.org/docs/latest/tutorial/performance#8-call-menusetapplicationmenunull-when-you-do-not-need-a-default-menu
 Menu.setApplicationMenu(builtMenu);
 
@@ -269,7 +269,8 @@ log.info("Created memory store");
 function shouldDisableUpdates() {
   // macOS can't have auto updates without a code signature
   // linux is not supported on the update server https://github.com/ytmdesktop/ytmdesktop/issues/1247 (hanging issue resolved)
-  if (process.platform !== "win32") return true;
+  //if (process.platform !== "win32") return true;
+  return true; // Updates break everything
 }
 
 // Configure the autoupdater
@@ -971,7 +972,7 @@ const createOrShowSettingsWindow = (): void => {
   });
 
   settingsWindow.webContents.setWindowOpenHandler(details => {
-    if (details.url === "https://github.com/ytmdesktop/ytmdesktop" || details.url === "https://ytmdesktop.github.io/") {
+    if (details.url.startsWith("https://github.com/") || details.url === "https://ytmdesktop.github.io/") {
       shell.openExternal(details.url);
     }
 
@@ -1094,7 +1095,7 @@ const createYTMView = (): void => {
   });
   ytmView.webContents.on("page-title-updated", (_event, title) => {
     if (mainWindow) {
-      mainWindow.setTitle(`${title} | YouTube Music Desktop App`);
+      mainWindow.setTitle(`${title} | YouTube Music Desktop App (with AdBlocker)`);
     }
   });
   ytmView.webContents.on("context-menu", (_event, params) => {

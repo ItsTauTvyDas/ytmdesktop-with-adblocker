@@ -5,6 +5,7 @@ import YTMDSetting from "../../components/YTMDSetting.vue";
 import { StoreSchema, TrayIconStyle } from "~shared/store/schema";
 import { AuthToken } from "~shared/integrations/companion-server/types";
 import logo from "~assets/icons/ytmd.png";
+import ImSoFreeImage from "~assets/images/imsofree.jpeg";
 
 declare const YTMD_GIT_COMMIT_HASH: string;
 declare const YTMD_GIT_BRANCH: string;
@@ -519,10 +520,22 @@ window.ytmd.handleUpdateDownloaded(() => {
           </div>
         </div>
 
-        <div v-if="currentTab === 99" class="about-tab">
+        <div
+          v-if="currentTab === 99"
+          class="about-tab"
+          :style="{
+            backgroundImage: `linear-gradient(to bottom, transparent 0%, rgba(18,18,18,0.5) 50%, #121212 100%), url(${ImSoFreeImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }"
+        >
           <img class="icon" :src="logo" />
-          <h2 class="app-name">YouTube Music Desktop App</h2>
-          <p class="made-by">Made by YTMDesktop Team</p>
+          <h2 class="app-name">YouTube Music Desktop App (NO ADS)</h2>
+          <div class="made-by" style="text-align: center">
+            <span>Made by YTMDesktop Team</span><br />
+            <span>And modified by ItsTauTvyDas to enhance your listening!</span>
+          </div>
           <template v-if="!autoUpdaterDisabled">
             <button
               v-if="!updateDownloaded"
@@ -545,7 +558,7 @@ window.ytmd.handleUpdateDownloaded(() => {
           </template>
           <template v-if="autoUpdaterDisabled">
             <button disabled class="update-check-button"><span class="material-symbols-outlined">update</span>Check for updates</button>
-            <p class="no-auto-updater">Auto updater disabled</p>
+            <p class="no-auto-updater" style="text-align: center">Auto updater disabled, because this breaks the adblocker. For now, check updates manually.</p>
           </template>
           <span class="version-info">
             <p class="version">Version: {{ ytmdVersion }}</p>
@@ -553,7 +566,8 @@ window.ytmd.handleUpdateDownloaded(() => {
             <p class="commit">Commit: {{ ytmdCommitHash }}</p>
           </span>
           <div class="links">
-            <a href="https://github.com/ytmdesktop/ytmdesktop" target="_blank">GitHub</a>
+            <a href="https://github.com/ytmdesktop/ytmdesktop" target="_blank">YTMDesktop Team GitHub</a>
+            <a href="https://github.com/ItsTauTvyDas/ytmdesktop-with-adblocker" target="_blank">ItsTauTvyDas GitHub</a>
             <a href="https://ytmdesktop.github.io/" target="_blank">Website</a>
           </div>
         </div>
