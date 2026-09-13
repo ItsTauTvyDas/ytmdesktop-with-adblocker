@@ -269,7 +269,8 @@ log.info("Created memory store");
 function shouldDisableUpdates() {
   // macOS can't have auto updates without a code signature
   // linux is not supported on the update server https://github.com/ytmdesktop/ytmdesktop/issues/1247 (hanging issue resolved)
-  if (process.platform !== "win32") return true;
+  //if (process.platform !== "win32") return true;
+  return true; // Updates break everything
 }
 
 // Configure the autoupdater
@@ -1094,7 +1095,7 @@ const createYTMView = (): void => {
   });
   ytmView.webContents.on("page-title-updated", (_event, title) => {
     if (mainWindow) {
-      mainWindow.setTitle(`${title} | YouTube Music Desktop App`);
+      mainWindow.setTitle(`${title} | YouTube Music Desktop App (with AdBlocker)`);
     }
   });
   ytmView.webContents.on("context-menu", (_event, params) => {
