@@ -28,6 +28,7 @@
   playerApi.addEventListener("onVideoDataChange", event => {
     if (event.playertype === 1 && (event.type === "dataloaded" || event.type === "dataupdated")) {
       let videoDetails = playerApi.getPlayerResponse().videoDetails;
+      if (!videoDetails) return;
       let playlistId = playerApi.getPlaylistId();
       let album = null;
       let hasFullMetadata = false;

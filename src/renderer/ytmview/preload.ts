@@ -327,9 +327,9 @@ window.addEventListener("load", async () => {
       (
         await webFrame.executeJavaScript(`
           (function() {
-            let playerResponse = window.__YTMD_HOOK__.ytmPlayerBar.playerApi.getPlayerResponse();
-            if (playerResponse) {
-              window.ytmd.sendVideoData(playerResponse.videoDetails, window.__YTMD_HOOK__.ytmPlayerBar.playerApi.getPlaylistId());
+            let videoDetails = window.__YTMD_HOOK__.ytmPlayerBar.playerApi.getPlayerResponse()?.videoDetails;
+            if (videoDetails) {
+              window.ytmd.sendVideoData(videoDetails, window.__YTMD_HOOK__.ytmPlayerBar.playerApi.getPlaylistId());
             }
           })
         `)
