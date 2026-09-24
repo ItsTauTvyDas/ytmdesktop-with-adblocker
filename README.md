@@ -1,5 +1,9 @@
 # YouTube Music Desktop App (with AdBlocker!)
 
+<img width="612" height="408" alt="imsofree" src="https://github.com/user-attachments/assets/44e713e3-d818-4be4-a217-118e0c261b8e"/>
+
+(how you will feel using this fork)
+
 ## Added features to this fork:
 * Added AdBlocker
 * Implemented [NonStop extension](https://github.com/lawfx/YoutubeNonStop/)
@@ -8,8 +12,9 @@
 
 Happy listening!
 
-<img width="612" height="408" alt="imsofree" src="https://github.com/user-attachments/assets/44e713e3-d818-4be4-a217-118e0c261b8e" />
-
+<p align="center">
+<img src="https://count.getloli.com/@itstautvydas-ytmdesktopadless?name=itstautvydas-ytmdesktopadless&theme=moebooru&padding=7&offset=0&align=top&scale=2&pixelated=1&darkmode=auto"/>
+</p>
 <details>
   <summary>Original README</summary>
 
