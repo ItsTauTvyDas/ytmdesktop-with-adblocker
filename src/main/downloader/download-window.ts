@@ -159,7 +159,10 @@ export async function startDownloadFlow(parent: BrowserWindow, videoId: string):
   });
   win.webContents.on("will-navigate", e => e.preventDefault());
   win.on("close", e => {
-    if (busy && !quitting) e.preventDefault();
+    if (busy && !quitting) {
+      e.preventDefault();
+      setImmediate(cancel);
+    }
   });
   win.on("closed", () => {
     ac.abort();
