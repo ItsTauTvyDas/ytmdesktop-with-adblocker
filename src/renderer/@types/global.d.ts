@@ -20,6 +20,7 @@ declare global {
       restartApplication(): void;
       restartApplicationForUpdate(): void;
       getTrueFilePath(file: File): string;
+      openDownloadsFolder(): Promise<string>;
 
       // Companion Authorization specific
       sendResult(authorized: boolean);

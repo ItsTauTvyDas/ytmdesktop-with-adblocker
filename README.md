@@ -9,6 +9,7 @@
 * Implemented [NonStop extension](https://github.com/lawfx/YoutubeNonStop/)
 * Updates are disabled because new updated files remove ad-block functionality
 * Added developer console access (`CTRL + SHIFT + I`)
+* Added mp4/mp3 downloader ([yt-dlp](https://github.com/yt-dlp/yt-dlp)) through YouTube's native download button on video right click popup menu (**NOTE:** *designed for downloading, not offline playing*). **Only tested on Windows!**
 
 Happy listening!
 

@@ -30,7 +30,7 @@ contextBridge.exposeInMainWorld("ytmd", {
     ipcRenderer.send("ytmView:storeStateChanged", queueState, likeStatus, volume, muted, adPlaying),
   sendCreatePlaylistObservation: (playlist: unknown) => ipcRenderer.send("ytmView:createPlaylistObserved", playlist),
   sendDeletePlaylistObservation: (playlistId: string) => ipcRenderer.send("ytmView:deletePlaylistObserved", playlistId),
-  sendDownloadRequest: (payload: unknown) => ipcRenderer.send("ytmView:downloadRequested", payload),
+  sendDownloadRequest: (payload: unknown) => ipcRenderer.send("ytmView:downloadRequested", payload)
 });
 
 function createStyleSheet() {
@@ -181,7 +181,6 @@ async function hookDownloadIntercept() {
 }
 
 function overrideHistoryButtonDisplay() {
-  // @ts-expect-error Style is reported as readonly but this still works
   document.querySelector<HTMLElement>("#history-link .history-button").style = "display: inline-block !important;";
 }
 

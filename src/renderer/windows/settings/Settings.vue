@@ -266,6 +266,11 @@ window.ytmd.handleUpdateDownloaded(() => {
   updateAvailable.value = false;
   updateDownloaded.value = true;
 });
+
+async function openDownloadsFolder() {
+  const error = await window.ytmd.openDownloadsFolder();
+  if (error) console.warn("Could not open downloads folder:", error);
+}
 </script>
 
 <template>
@@ -546,6 +551,22 @@ window.ytmd.handleUpdateDownloaded(() => {
                   </a>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <span class="material-symbols-outlined app-icon">download</span>
+                </td>
+                <td title="Adds a Download option to the song menu (⋮)">YouTube Downloader <small>via yt-dlp</small></td>
+                <td>
+                  <div class="actions">
+                    <button type="button" title="Open downloads folder" @click="openDownloadsFolder">
+                      <span class="material-symbols-outlined">folder_open</span>
+                    </button>
+                    <a target="_blank" href="https://github.com/yt-dlp/yt-dlp" title="yt-dlp on GitHub">
+                      <span class="material-symbols-outlined">open_in_new</span>
+                    </a>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -726,8 +747,32 @@ window.ytmd.handleUpdateDownloaded(() => {
 }
 
 .extension-tab table td:last-child {
-  width: 56px;
+  width: 110px;
   text-align: center;
+}
+
+.extension-tab .app-icon {
+  display: block;
+  font-size: 25px;
+  color: #dddddd;
+}
+
+.extension-tab .actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.extension-tab .actions button {
+  margin: 0;
+  padding: 4px;
+  background: transparent;
+  color: #aaa;
+}
+
+.extension-tab .actions button:hover {
+  color: #fff;
 }
 
 .extension-tab table a {

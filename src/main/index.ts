@@ -32,6 +32,7 @@ import { MemoryStoreSchema, StoreSchema, TrayIconStyle } from "../shared/store/s
 import { ElectronBlocker, fullLists } from "@ghostery/adblocker-electron";
 import fetch from "node-fetch";
 import autoConfirmScript from "./scripts/autoconfirm?raw";
+import { getDownloadDir, startDownloadFlow } from "./downloader/download-window";
 
 import CompanionServer from "./integrations/companion-server";
 import CustomCSS from "./integrations/custom-css";
@@ -1621,6 +1622,13 @@ app.on("ready", async () => {
     app.quit();
   });
 
+  ipcMain.handle("downloads:openFolder", async event => {
+    if (!settingsWindow || event.sender !== settingsWindow.webContents) return "Not allowed";
+    const dir = getDownloadDir();
+    await fs.mkdir(dir, { recursive: true });
+    return shell.openPath(dir);
+  });
+
   // Handle ytm view ipc
   ipcMain.on("ytmView:loaded", event => {
     if (ytmView !== null && mainWindow !== null) {
@@ -1707,62 +1715,14 @@ app.on("ready", async () => {
     }
   });
 
-  let downloadDialogOpen = false;
-  let ytdlpProcessing = false;
-
-  ipcMain.on("ytmView:downloadRequested", async (event, payload: { videoId?: unknown; playlistId?: unknown }) => {
+  ipcMain.on("ytmView:downloadRequested", (event, payload: { videoId?: unknown }) => {
     if (event.sender !== ytmView.webContents) return;
 
-    const validVideoId = (v: unknown): v is string => typeof v === "string" && /^[\w-]{11}$/.test(v);
-    const validPlaylistId = (v: unknown): v is string => typeof v === "string" && /^[\w-]{2,64}$/.test(v);
+    const valid = (v: unknown): v is string => typeof v === "string" && /^[\w-]{11}$/.test(v);
+    const videoId = valid(payload?.videoId) ? payload.videoId : valid(lastVideoId) ? lastVideoId : null;
+    if (!videoId || !mainWindow) return;
 
-    const videoId = validVideoId(payload?.videoId) ? payload.videoId : validVideoId(lastVideoId) ? lastVideoId : null;
-    if (!videoId) return;
-
-    let playlistId: string | null = validPlaylistId(payload?.playlistId) ? payload.playlistId : null;
-    if (!playlistId && videoId === lastVideoId && validPlaylistId(lastPlaylistId)) playlistId = lastPlaylistId;
-    if (playlistId === "LM") playlistId = null;
-
-    const watchUrl = `https://music.youtube.com/watch?v=${videoId}`;
-    const playlistUrl = playlistId ? `https://music.youtube.com/playlist?list=${playlistId}` : null;
-
-    if (downloadDialogOpen || !mainWindow) return;
-    downloadDialogOpen = true;
-
-    try {
-      const buttons = ["Download song", ...(playlistUrl ? ["Download playlist"] : []), "Copy link", "Cancel"];
-      const cancelId = buttons.length - 1;
-
-      const result = await dialog.showMessageBox(mainWindow, {
-        type: "question",
-        title: "Download",
-        message: "What do you want to do?",
-        detail: playlistUrl ? `Song: ${watchUrl}\nPlaylist: ${playlistUrl}` : `Song: ${watchUrl}`,
-        buttons,
-        defaultId: 0,
-        cancelId,
-        checkboxLabel: "Open the destination folder when done",
-        checkboxChecked: false,
-        noLink: true
-      });
-
-      const choice = buttons[result.response];
-      log.info("Download dialog choice", { choice, openFolder: result.checkboxChecked });
-
-      switch (choice) {
-        case "Download song":
-          break;
-        case "Download playlist":
-          break;
-        case "Copy link":
-          clipboard.writeText(watchUrl);
-          break;
-        default:
-          break;
-      }
-    } finally {
-      downloadDialogOpen = false;
-    }
+    startDownloadFlow(mainWindow, videoId).catch(err => log.error("Download flow crashed", err));
   });
 
   ipcMain.on("ytmView:navigateDefault", event => {
@@ -1889,7 +1849,7 @@ app.on("ready", async () => {
     autoUpdater.quitAndInstall();
   });
 
-  ipcMain.handle('open-file-in-editor', async (event, filePath) => {
+  ipcMain.handle("open-file-in-editor", async (event, filePath) => {
     return await shell.openPath(filePath);
   });
 
