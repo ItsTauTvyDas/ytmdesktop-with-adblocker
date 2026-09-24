@@ -10,9 +10,16 @@
 * Updates are disabled because new updated files remove ad-block functionality
 * Added developer console access (`CTRL + SHIFT + I`)
 * Added mp4/mp3 downloader ([yt-dlp](https://github.com/yt-dlp/yt-dlp)) through YouTube's native download button on video right click
-popup menu (**NOTE:** *designed for downloading, not offline playing*). **Only tested on Windows!**. If video download fails,
+popup menu (**NOTE:** *designed for downloading, not offline playing*). **Only tested on Windows!** If video download fails,
 try lower quality, I assume some qualities are locked behind the premium wall. Downloaded files are saved inside your downloads folder 
 in `YTM Downloads`.
+
+<details>
+  <summary>Downloader images</summary>
+  <img width="514" height="464" alt="image" src="https://github.com/user-attachments/assets/88a2f9ce-4ca6-4c3d-adae-b0369a3972a9" />
+  <img width="483" height="440" alt="image" src="https://github.com/user-attachments/assets/64293074-104e-465b-a761-53567e500a5b" />
+  <img width="689" height="181" alt="image" src="https://github.com/user-attachments/assets/77d4801a-aecc-4a79-920d-9513c6c3bef3" />
+</details>
 
 Happy listening!
 
