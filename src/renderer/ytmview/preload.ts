@@ -17,6 +17,7 @@ import hookPlayerApiEventsScript from "./scripts/hookplayerapievents.script?raw"
 import getPlaylistsScript from "./scripts/getplaylists.script?raw";
 import toggleLikeScript from "./scripts/togglelike.script?raw";
 import toggleDislikeScript from "./scripts/toggledislike.script?raw";
+import downloadInterceptScript from "./scripts/downloadintercept.script?raw";
 
 const store = new Store<StoreSchema>();
 
@@ -28,7 +29,8 @@ contextBridge.exposeInMainWorld("ytmd", {
   sendStoreUpdate: (queueState: unknown, likeStatus: string, volume: number, muted: boolean, adPlaying: boolean) =>
     ipcRenderer.send("ytmView:storeStateChanged", queueState, likeStatus, volume, muted, adPlaying),
   sendCreatePlaylistObservation: (playlist: unknown) => ipcRenderer.send("ytmView:createPlaylistObserved", playlist),
-  sendDeletePlaylistObservation: (playlistId: string) => ipcRenderer.send("ytmView:deletePlaylistObserved", playlistId)
+  sendDeletePlaylistObservation: (playlistId: string) => ipcRenderer.send("ytmView:deletePlaylistObserved", playlistId),
+  sendDownloadRequest: (payload: unknown) => ipcRenderer.send("ytmView:downloadRequested", payload),
 });
 
 function createStyleSheet() {
@@ -174,6 +176,10 @@ async function hookPlayerApiEvents() {
   (await webFrame.executeJavaScript(hookPlayerApiEventsScript))();
 }
 
+async function hookDownloadIntercept() {
+  (await webFrame.executeJavaScript(downloadInterceptScript))();
+}
+
 function overrideHistoryButtonDisplay() {
   // @ts-expect-error Style is reported as readonly but this still works
   document.querySelector<HTMLElement>("#history-link .history-button").style = "display: inline-block !important;";
@@ -278,6 +284,7 @@ window.addEventListener("load", async () => {
   await createAdditionalPlayerBarControls();
   await hideChromecastButton();
   await hookPlayerApiEvents();
+  await hookDownloadIntercept();
   overrideHistoryButtonDisplay();
 
   const integrationScripts: { [integrationName: string]: { [scriptName: string]: string } } = await ipcRenderer.invoke("ytmView:getIntegrationScripts");

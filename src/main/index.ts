@@ -59,7 +59,7 @@ let appUpdateDownloaded = false;
 let appLaunchUpdateCheck = true;
 
 let stateSaverInterval: NodeJS.Timeout | null = null;
-let blocker = null;
+let blocker: boolean = null;
 
 //#region   Crash + Error reporting
 crashReporter.start({ uploadToServer: false });
@@ -1707,6 +1707,64 @@ app.on("ready", async () => {
     }
   });
 
+  let downloadDialogOpen = false;
+  let ytdlpProcessing = false;
+
+  ipcMain.on("ytmView:downloadRequested", async (event, payload: { videoId?: unknown; playlistId?: unknown }) => {
+    if (event.sender !== ytmView.webContents) return;
+
+    const validVideoId = (v: unknown): v is string => typeof v === "string" && /^[\w-]{11}$/.test(v);
+    const validPlaylistId = (v: unknown): v is string => typeof v === "string" && /^[\w-]{2,64}$/.test(v);
+
+    const videoId = validVideoId(payload?.videoId) ? payload.videoId : validVideoId(lastVideoId) ? lastVideoId : null;
+    if (!videoId) return;
+
+    let playlistId: string | null = validPlaylistId(payload?.playlistId) ? payload.playlistId : null;
+    if (!playlistId && videoId === lastVideoId && validPlaylistId(lastPlaylistId)) playlistId = lastPlaylistId;
+    if (playlistId === "LM") playlistId = null;
+
+    const watchUrl = `https://music.youtube.com/watch?v=${videoId}`;
+    const playlistUrl = playlistId ? `https://music.youtube.com/playlist?list=${playlistId}` : null;
+
+    if (downloadDialogOpen || !mainWindow) return;
+    downloadDialogOpen = true;
+
+    try {
+      const buttons = ["Download song", ...(playlistUrl ? ["Download playlist"] : []), "Copy link", "Cancel"];
+      const cancelId = buttons.length - 1;
+
+      const result = await dialog.showMessageBox(mainWindow, {
+        type: "question",
+        title: "Download",
+        message: "What do you want to do?",
+        detail: playlistUrl ? `Song: ${watchUrl}\nPlaylist: ${playlistUrl}` : `Song: ${watchUrl}`,
+        buttons,
+        defaultId: 0,
+        cancelId,
+        checkboxLabel: "Open the destination folder when done",
+        checkboxChecked: false,
+        noLink: true
+      });
+
+      const choice = buttons[result.response];
+      log.info("Download dialog choice", { choice, openFolder: result.checkboxChecked });
+
+      switch (choice) {
+        case "Download song":
+          break;
+        case "Download playlist":
+          break;
+        case "Copy link":
+          clipboard.writeText(watchUrl);
+          break;
+        default:
+          break;
+      }
+    } finally {
+      downloadDialogOpen = false;
+    }
+  });
+
   ipcMain.on("ytmView:navigateDefault", event => {
     if (ytmView) {
       if (event.sender !== mainWindow.webContents) return;
@@ -1829,6 +1887,10 @@ app.on("ready", async () => {
     // Electron explicitly will not call before-quit until after all the windows have closed, requiring us to have set that the application is quitting before hand
     applicationQuitting = true;
     autoUpdater.quitAndInstall();
+  });
+
+  ipcMain.handle('open-file-in-editor', async (event, filePath) => {
+    return await shell.openPath(filePath);
   });
 
   log.info("Setup IPC handlers");
