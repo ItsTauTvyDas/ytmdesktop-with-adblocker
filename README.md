@@ -13,6 +13,7 @@
 popup menu (**NOTE:** *designed for downloading, not offline playing*). **Only tested on Windows!** If video download fails,
 try lower quality, I assume some qualities are locked behind the premium wall. Downloaded files are saved inside your downloads folder 
 in `YTM Downloads`.
+* I'm open for any more [suggestions](https://github.com/ItsTauTvyDas/ytmdesktop-with-adblocker/issues)!
 
 <details>
   <summary>Downloader images</summary>
